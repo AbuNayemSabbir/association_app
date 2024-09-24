@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "537891335138",
+    "project_id": "association--app",
+    "storage_bucket": "association--app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537891335138:android:e2f93d43a8228c69ed27bb",
+        "android_client_info": {
+          "package_name": "com.association.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvoxLudRt9fnsrf0ztPwWJnPTFdlqnQ08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

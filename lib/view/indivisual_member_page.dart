@@ -29,6 +29,7 @@ class IndividualMemberPage extends StatelessWidget {
             },
           );
         },
+
       ),
     );
   }

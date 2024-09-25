@@ -64,107 +64,144 @@ class MembersPage extends StatelessWidget {
             )); // Show message if no members
           }
 
+          final uniquePhones = <String>{}; // Using Set for unique phone numbers
+          final uniqueMembers = <QueryDocumentSnapshot<Object?>>[];
+
+          for (var doc in snapshot.data!.docs) {
+            // Cast to QueryDocumentSnapshot
+            final QueryDocumentSnapshot<Object?> memberDoc = doc;
+            String phone = memberDoc['phone'];
+            if (!uniquePhones.contains(phone)) {
+              uniquePhones.add(phone);
+              uniqueMembers.add(memberDoc);
+            }
+          }
+
+
           return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+            itemCount: uniqueMembers.length,
             itemBuilder: (context, index) {
-              final member = snapshot.data!.docs[index];
+              final member = uniqueMembers[index];
               final String name = member['name'];
               final String phone = member['phone'];
-              final userRule=box.read("userRule");
+              final userRule = box.read("userRule");
 
               return Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: Container(
-                  padding: const EdgeInsets.all(12.0),
-                  decoration: customBoxDecoration(),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: getRandomColor(),
-                      ),
-                      const SizedBox(width: 8),
-
-                      // Name and Phone Column
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              phone,
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Circle Avatar for Name's Initial
+                        CircleAvatar(
+                          backgroundColor: CustomColors.primaryColor,
+                          child: Text(
+                            name[0],
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      // Total Investment Text
-                      _firestoreService.showTotalInvestment(phone),
-                      userRule=="Admin"?InkWell(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20), // Custom border radius
-                                    ),
-                                    insetPadding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                  child:  Container(
-                                    padding: const EdgeInsets.all(16),
-                                    width: MediaQuery.of(context).size.width * 0.9,
+                        const SizedBox(width: 12),
 
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                    const Text("Do you want to delete This Member?",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: CustomColors.warningColor),),
-                                    SizedBox(height: 16,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            backgroundColor: CustomColors.warningColor
-                                          ),
-                                          onPressed: () {
-                                            _firestoreService.deleteMember(phone,context);
-                                          },
-                                          child: const Text('Yes'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(); // Close the dialog without saving
-                                          },
-                                          child: const Text('Cancel'),
-                                        ),
-                                      ],
+                        // Name and Phone Column
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Name and Phone
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      "$name, ",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                      ],
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      phone,
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),);
-                                });
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.delete,
-                              color: CustomColors.warningColor,
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              // Total Investment Info (from Firestore)
+                              Row(
+                                children: [
+                                  const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 16),
+                                  const SizedBox(width: 6),
+                                  Expanded(child: _firestoreService.showTotalInvestment(phone)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Popup Menu for Admin
+                        if (userRule == "Admin")
+                          PopupMenuButton<String>(
+                            onSelected: (String result) {
+                              if (result == 'Edit') {
+                                showEditDialog(context, member); // Call edit method
+                              } else if (result == 'Delete') {
+                                showDeleteDialog(context, phone); // Call delete method
+                              }
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          )):const SizedBox.shrink(),
-                    ],
+                            icon: const Icon(
+                              Icons.more_vert,
+                              color: Colors.grey,
+                            ),
+                            itemBuilder: (BuildContext context) => [
+                              const PopupMenuItem(
+                                value: 'Edit',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.edit, color: Colors.blue),
+                                    SizedBox(width: 8),
+                                    Text('Edit'),
+                                  ],
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: 'Delete',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.red),
+                                    SizedBox(width: 8),
+                                    Text('Delete'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               );
             },
           );
+
+
         },
       ),
       bottomNavigationBar: Padding(
@@ -176,6 +213,147 @@ class MembersPage extends StatelessWidget {
           title: 'Add Member',
         ),
       ),
+    );
+  }
+
+  void showDeleteDialog(BuildContext context, String phone) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Do you want to delete this member?",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: CustomColors.warningColor,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: CustomColors.warningColor,
+                      ),
+                      onPressed: () {
+                        _firestoreService.deleteMember(phone, context);
+                      },
+                      child: const Text('Delete'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close dialog
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  void showEditDialog(BuildContext context, QueryDocumentSnapshot member) {
+    final nameController = TextEditingController(text: member['name']);
+    final phoneController = TextEditingController(text: member['phone']);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Edit Member",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: nameController,
+                  label: 'Name',
+                ),
+                const SizedBox(height: 12,),
+                CustomTextField(
+                  controller: phoneController,
+                  label: 'Phone',
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      onPressed: () async {
+                        final newName = nameController.text;
+                        final newPhone = phoneController.text;
+
+                        // Check for duplicate phone number
+                        var snapshot = await FirebaseFirestore.instance
+                            .collection('members')
+                            .where('phone', isEqualTo: newPhone)
+                            .get();
+
+                        if (snapshot.docs.isNotEmpty && newPhone != member['phone']) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Phone number already exists!'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          await FirebaseFirestore.instance
+                              .collection('members')
+                              .doc(member.id)
+                              .update({
+                            'name': newName,
+                            'phone': newPhone,
+                          });
+
+                          Navigator.of(context).pop(); // Close the dialog
+                        }
+                      },
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -281,7 +459,6 @@ class MembersPage extends StatelessWidget {
                               errorMessage.value =
                                   'Phone number already exists!';
                             } else {
-                              // Clear any previous error messages
                               errorMessage.value = '';
 
                               // If not duplicate, add member
@@ -291,8 +468,7 @@ class MembersPage extends StatelessWidget {
                                 date: formattedDate,
                               );
 
-                              Navigator.of(context)
-                                  .pop(); // Close dialog after saving
+                              Navigator.of(context).pop(); // Close dialog after saving
                             }
                           }
                         },

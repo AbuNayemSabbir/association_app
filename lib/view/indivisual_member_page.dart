@@ -43,10 +43,7 @@ class IndividualMemberPage extends StatelessWidget {
                 child: Text(
                   "You have no members to invest. Please Add your association members",
                   textAlign: TextAlign.justify,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
                 ),
               ),
             );
@@ -167,7 +164,7 @@ class IndividualMemberPage extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  _showAddDepositModal(context, name, phone);
+                                  _showAddDepositModal(context, name, phone,member['id']);
                                 },
                               ),
                           ],
@@ -185,7 +182,7 @@ class IndividualMemberPage extends StatelessWidget {
     );
   }
 
-  void _showAddDepositModal(BuildContext context, String name, String phone) {
+  void _showAddDepositModal(BuildContext context, String name, String phone,id) {
     String formatDate(DateTime date) {
       return DateFormat('dd MMM, yyyy').format(date);
     }

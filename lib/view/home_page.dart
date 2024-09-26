@@ -22,17 +22,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirestoreService _firebaseService = FirestoreService();
 
-  late Future<double> totalBalanceFuture;
-  late Future<double> totalInvestmentFuture;
-  late Future<double> totalExpenseFuture;
 
-  @override
-  void initState() {
-    super.initState();
-    totalBalanceFuture = _firebaseService.getTotalBalance();
-    totalInvestmentFuture = _firebaseService.getAllTotalInvestment();
-    totalExpenseFuture = _firebaseService.getTotalExpense();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,17 +47,22 @@ class _DashboardPageState extends State<DashboardPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 10),
-              const Text(
-                AppUtils.appName,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: CustomColors.primaryColor,
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  AppUtils.appName,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: CustomColors.primaryColor,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
-              FutureBuilder<double>(
-                future: totalBalanceFuture,
+
+// Total Balance Card using StreamBuilder
+              StreamBuilder<double>(
+                stream: _firebaseService.getTotalBalanceStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
@@ -84,9 +79,9 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               const SizedBox(height: 10),
 
-              // Total Investment Card
-              FutureBuilder<double>(
-                future: totalInvestmentFuture,
+// Total Investment Card using StreamBuilder
+              StreamBuilder<double>(
+                stream: _firebaseService.getAllTotalInvestmentStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
@@ -103,9 +98,9 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               const SizedBox(height: 10),
 
-              // Total Expense Card
-              FutureBuilder<double>(
-                future: totalExpenseFuture,
+// Total Expense Card using StreamBuilder
+              StreamBuilder<double>(
+                stream: _firebaseService.getTotalExpenseStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
@@ -120,6 +115,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   );
                 },
               ),
+
               const SizedBox(height: 20),
               _buildDashboardButton(
                 title: AppUtils.membersInfoTitle,
@@ -156,42 +152,45 @@ class _DashboardPageState extends State<DashboardPage> {
     required IconData icon,
     required Color valueColor,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: valueColor, size: 40),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: valueColor,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: valueColor, size: 40),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-              ),
-            ],
-          ),
-        ],
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: valueColor,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -211,7 +210,7 @@ class _DashboardPageState extends State<DashboardPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           decoration: BoxDecoration(
             color: CustomColors.primaryColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(color: CustomColors.primaryColor, width: 2),
           ),
           child: Row(
@@ -246,35 +245,46 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             child: Center(
               child: Text(
-                "Menu",
+                AppUtils.appName,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text("Profile"),
+            title: const Text(AppUtils.membersInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+            leading: const Icon(Icons.people,color: CustomColors.primaryColor),
             onTap: () {
-              // Add navigation to profile section here
-            },
+              Get.back();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MembersPage()));
+            }
           ),
           ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text("Settings"),
+            title: const Text(AppUtils.allDepositsInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+            leading: const Icon(Icons.account_balance,color: CustomColors.primaryColor),
             onTap: () {
-              // Add navigation to settings section here
-            },
+              Get.back();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AllDepositsPage()));
+            }
           ),
           ListTile(
-            leading: const Icon(Icons.notifications),
-            title: const Text('Notifications'),
+            title: const Text(AppUtils.allExpensesInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+            leading: const Icon(Icons.money_off,color: CustomColors.primaryColor),
             onTap: () {
-              // Add navigation to notifications section here
-            },
+              Get.back();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AllExpensesPage()));
+            }
+          ),
+          ListTile(
+            title: const Text(AppUtils.individualDepositInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+            leading: const Icon(Icons.person_search,color: CustomColors.primaryColor,),
+            onTap: () {
+              Get.back();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => IndividualMemberPage()));
+            }
           ),
           const Spacer(), // Pushes the logout button to the bottom
           ListTile(

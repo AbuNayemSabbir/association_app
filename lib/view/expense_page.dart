@@ -89,7 +89,7 @@ class AllExpensesPage extends StatelessWidget {
                             width: 4.0,
                             height: 68,
                             color: CustomColors.primaryColor,
-                            margin: const EdgeInsets.only(right: 8.0),
+                            margin: const EdgeInsets.only(right: 12.0,left: 20),
                           ),
 
                           Expanded(
@@ -98,71 +98,83 @@ class AllExpensesPage extends StatelessWidget {
                               child: Container(
                                 decoration: customBoxDecoration(),
                                 padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     // Title and amount in one line
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           "${expense['expense_title']}",
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 14,
+                                            fontSize: 16,
                                           ),
                                         ),
-                                        if (userRule == "Admin")
-                                          PopupMenuButton<String>(
-                                            onSelected: (String result) {
-                                              if (result == 'Edit') {
-                                                showEditDialog(context, expenseId,expense['invest_amount']); // Call edit method
-                                              } else if (result == 'Delete') {
-                                                showDeleteDialog(context, expenseId); // Call delete method
-                                              }
-                                            },
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            icon: const Icon(
-                                              Icons.more_vert,
-                                              color: Colors.grey,
-                                            ),
-                                            itemBuilder: (BuildContext context) => [
-                                              const PopupMenuItem(
-                                                value: 'Edit',
-                                                child: Row(
-                                                  children: [
-                                                    Icon(Icons.edit, color: Colors.blue),
-                                                    SizedBox(width: 8),
-                                                    Text('Edit'),
-                                                  ],
-                                                ),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 16),
+                                            const SizedBox(width: 6),
+                                            const Text(
+                                              "Amount: ",
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 16,
                                               ),
-                                              const PopupMenuItem(
-                                                value: 'Delete',
-                                                child: Row(
-                                                  children: [
-                                                    Icon(Icons.delete, color: Colors.red),
-                                                    SizedBox(width: 8),
-                                                    Text('Delete'),
-                                                  ],
-                                                ),
+                                            ),
+                                            Text(
+                                              "৳ ${expense['expense_amount'] ?? '0.0'}",
+                                              style: const TextStyle(
+                                                color: CustomColors.primaryColor,
+                                                fontSize: 16,
                                               ),
-                                            ],
-                                          ),
+                                            )
+                                          ],
+                                        ),
+
                                       ],
                                     ),
-                                    const SizedBox(height: 4),
 
-                                    // Amount in the next line
-                                    Text(
-                                      "Amount: ${expense['expense_amount'] ?? '0.0'}",
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
+                                    if (userRule == "Admin")
+                                      PopupMenuButton<String>(
+                                        onSelected: (String result) {
+                                          if (result == 'Edit') {
+                                            showEditDialog(context, expenseId,expense['expense_amount']); // Call edit method
+                                          } else if (result == 'Delete') {
+                                            showDeleteDialog(context, expenseId); // Call delete method
+                                          }
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        icon: const Icon(
+                                          Icons.more_vert,
+                                          color: Colors.grey,
+                                        ),
+                                        itemBuilder: (BuildContext context) => [
+                                          const PopupMenuItem(
+                                            value: 'Edit',
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.edit, color: Colors.blue),
+                                                SizedBox(width: 8),
+                                                Text('Edit'),
+                                              ],
+                                            ),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: 'Delete',
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.delete, color: Colors.red),
+                                                SizedBox(width: 8),
+                                                Text('Delete'),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -192,7 +204,7 @@ class AllExpensesPage extends StatelessWidget {
     );
   }
   void showEditDialog(BuildContext context, id,amount) {
-    final amountController = TextEditingController(text: amount);
+    final amountController = TextEditingController(text: amount.toString());
 
     showDialog(
       context: context,
@@ -216,6 +228,7 @@ class AllExpensesPage extends StatelessWidget {
                 CustomTextField(
                   controller: amountController,
                   label: 'Amount',
+                  keyboardType: TextInputType.number,
                 ),
 
                 const SizedBox(height: 16),
@@ -230,17 +243,22 @@ class AllExpensesPage extends StatelessWidget {
                         final newAmount = amountController.text;
 
                         await FirebaseFirestore.instance
-                            .collection('members')
+                            .collection('expense')
                             .doc(id)
                             .update({
-                          'invest_amount': newAmount,
+                          'expense_amount': newAmount,
                         });
 
-                        Navigator.of(context).pop(); // Close the dialog
+                        Navigator.of(context).pop();
+                        Get.snackbar(
+                          'Success',
+                          'This Expense update successfully',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
 
                       },
                       child: const Text(
-                        'Save',
+                        'Update',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -290,7 +308,7 @@ class AllExpensesPage extends StatelessWidget {
                         backgroundColor: CustomColors.warningColor,
                       ),
                       onPressed: () {
-                        _firestoreService.deleteDeposit(id, context);
+                        _firestoreService.deleteExpenseByID(id, context);
                       },
                       child: const Text('Delete'),
                     ),
@@ -378,7 +396,7 @@ class AllExpensesPage extends StatelessWidget {
                             amountController.text.isNotEmpty) {
                           _firestoreService.addExpense(
                             expenseTitle: titleController.text,
-                            expenseAmount: double.parse(amountController.text),
+                            expenseAmount: amountController.text,
                             date: formattedDate,
                           );
                           Navigator.of(context).pop(); // Close modal after saving

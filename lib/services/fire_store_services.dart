@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -14,12 +15,26 @@ class FirestoreService {
   }
 
   // Add a new expense to Firestore
-  Future<void> addExpense({required String expenseTitle, required double expenseAmount, required String date}) async {
-    await _db.collection('expense').add({
-      'expense_title': expenseTitle,
-      'expense_amount': expenseAmount,
-      'date': date,
-    });
+  Future<void> addExpense({
+    required String expenseTitle,
+    required String expenseAmount,
+    required String date,
+  }) async {
+    try {
+      // Create a new document reference (this will auto-generate an ID)
+      final docRef = _db.collection('expense').doc();
+
+      await docRef.set({
+        'expense_title': expenseTitle,
+        'expense_amount': expenseAmount,
+        'date': date,
+        'id': docRef.id,
+      });
+
+      Get.snackbar('Success', "Expense added successfully", snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      Get.snackbar('Error', "Failed to add expense", colorText: CustomColors.errorColor, snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
 
@@ -29,19 +44,28 @@ class FirestoreService {
     required String phone,
   }) async {
     try {
-      isAddMemberLoading.value=true;
-      await _db.collection('members').add({
+      isAddMemberLoading.value = true;
+
+      // Create a new document reference (this will auto-generate an ID)
+      final docRef = _db.collection('members').doc();
+
+      await docRef.set({
         'date': date,
         'invest_amount': null,   // Setting invest_amount as null
         'invest_title': null,    // Setting invest_title as null
         'name': name,
         'phone': phone,
+        'id': docRef.id,  // Set the auto-generated ID inside the document
       });
-      isAddMemberLoading.value=false;
-      Get.snackbar('Success', "Members add Successfully",snackPosition: SnackPosition.BOTTOM);
+
+      isAddMemberLoading.value = false;
+      Get.snackbar('Success', "Member added successfully", snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
-      Get.snackbar('Error', "e",colorText: CustomColors.errorColor,snackPosition: SnackPosition.BOTTOM);     }
+      isAddMemberLoading.value = false;
+      Get.snackbar('Error', e.toString(), colorText: CustomColors.errorColor, snackPosition: SnackPosition.BOTTOM);
+    }
   }
+
   Future<void> addDeposit({
     required String date,
     required String name,
@@ -50,12 +74,15 @@ class FirestoreService {
   }) async {
     try {
       isAddMemberLoading.value=true;
+      final docRef = _db.collection('members').doc();
+
       await _db.collection('members').add({
         'date': date,
         'invest_amount': amount,
         'invest_title': null,
         'name': name,
         'phone': phone,
+        'id': docRef.id
       });
       isAddMemberLoading.value=false;
       Get.snackbar('Success', "Members add Successfully",snackPosition: SnackPosition.BOTTOM);
@@ -134,6 +161,8 @@ class FirestoreService {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 16),
+            const SizedBox(width: 6),
             const Flexible(
               child: Text(
                 'Total Invest:  ',
@@ -142,7 +171,7 @@ class FirestoreService {
             ),
             Flexible(
               child: Text(
-                '${snapshot.data?.toStringAsFixed(2) ?? '0.00'} Taka',
+                '৳ ${snapshot.data?.toStringAsFixed(2) ?? '0.00'}',
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -224,8 +253,9 @@ class FirestoreService {
       );
     }
   }
-  Future<void> deleteExpeseByID(String id, BuildContext context) async {
+  Future<void> deleteExpenseByID(String id, BuildContext context) async {
     try {
+      // Fetch the document by ID
       QuerySnapshot querySnapshot = await _db
           .collection('expense')
           .where('id', isEqualTo: id)
@@ -235,16 +265,17 @@ class FirestoreService {
         for (var doc in querySnapshot.docs) {
           await _db.collection('expense').doc(doc.id).delete();
         }
+
         Navigator.of(context).pop(); // Close dialog
         Get.snackbar(
           'Success',
-          'Member deleted successfully',
+          'This Expense delete successfully',
           snackPosition: SnackPosition.BOTTOM,
         );
       } else {
         Get.snackbar(
           'Error',
-          'Member not found',
+          'Expense not found',
           colorText: CustomColors.errorColor,
           snackPosition: SnackPosition.BOTTOM,
         );
@@ -258,51 +289,43 @@ class FirestoreService {
       );
     }
   }
-  Future<double> getAllTotalInvestment() async {
-    double totalInvestment = 0.0;
 
-    try {
-      QuerySnapshot snapshot = await _db.collection('members').get();
+// Stream to get the Total Investment from 'members' collection
+  Stream<double> getAllTotalInvestmentStream() {
+    return _db.collection('members').snapshots().map((snapshot) {
+      double totalInvestment = 0.0;
       for (var doc in snapshot.docs) {
-        double? investAmount = double.tryParse(doc['invest_amount']??"0.0");
+        double? investAmount = double.tryParse(doc['invest_amount'] ?? "0.0");
         if (investAmount != null) {
           totalInvestment += investAmount;
         }
       }
-    } catch (e) {
-      print("Error fetching total investment: $e");
-      return 0.0;
-    }
-    return totalInvestment;
+      return totalInvestment;
+    });
   }
 
-  // Method to fetch Total Expense from 'expense' collection
-  Future<double> getTotalExpense() async {
-    double totalExpense = 0.0;
-
-    try {
-      QuerySnapshot snapshot = await _db.collection('expense').get();
+// Stream to get the Total Expense from 'expense' collection
+  Stream<double> getTotalExpenseStream() {
+    return _db.collection('expense').snapshots().map((snapshot) {
+      double totalExpense = 0.0;
       for (var doc in snapshot.docs) {
-        double? expenseAmount = double.tryParse(doc['expense_amount']??"0.0");
+        double? expenseAmount = double.tryParse(doc['expense_amount'] ?? "0.0");
         if (expenseAmount != null) {
           totalExpense += expenseAmount;
         }
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching total expense: $e");
-      }
-      return 0.0;
-    }
-    return totalExpense;
+      return totalExpense;
+    });
   }
 
-  // Method to calculate the Total Balance by subtracting totalExpense from totalInvestment
-  Future<double> getTotalBalance() async {
-    double totalInvestment = await getAllTotalInvestment();
-    double totalExpense = await getTotalExpense();
-
-    return totalInvestment - totalExpense;
+// Stream to calculate the Total Balance by subtracting totalExpense from totalInvestment
+  Stream<double> getTotalBalanceStream() {
+    return CombineLatestStream.combine2(
+      getAllTotalInvestmentStream(),
+      getTotalExpenseStream(),
+          (double totalInvestment, double totalExpense) {
+        return totalInvestment - totalExpense;
+      },
+    );
   }
-
 }

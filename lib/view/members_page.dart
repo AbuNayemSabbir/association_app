@@ -35,7 +35,7 @@ class MembersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(AppUtils.membersSectionTitle)),
+      appBar: AppBar(title: const Text(AppUtils.membersSectionTitle),centerTitle: true,),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('members').snapshots(),
         builder: (context, snapshot) {
@@ -53,13 +53,10 @@ class MembersPage extends StatelessWidget {
             return const Center(
                 child: Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text(
+                  child: Text(
                 "You have no members. Please Add your association members",
                 textAlign: TextAlign.justify,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
+                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
               ),
             )); // Show message if no members
           }
@@ -82,6 +79,7 @@ class MembersPage extends StatelessWidget {
             itemCount: uniqueMembers.length,
             itemBuilder: (context, index) {
               final member = uniqueMembers[index];
+              final id = member['id'];
               final String name = member['name'];
               final String phone = member['phone'];
               final userRule = box.read("userRule");
@@ -142,13 +140,7 @@ class MembersPage extends StatelessWidget {
                               const SizedBox(height: 8),
 
                               // Total Investment Info (from Firestore)
-                              Row(
-                                children: [
-                                  const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 16),
-                                  const SizedBox(width: 6),
-                                  Expanded(child: _firestoreService.showTotalInvestment(phone)),
-                                ],
-                              ),
+                              _firestoreService.showTotalInvestment(phone),
                             ],
                           ),
                         ),
@@ -158,7 +150,7 @@ class MembersPage extends StatelessWidget {
                           PopupMenuButton<String>(
                             onSelected: (String result) {
                               if (result == 'Edit') {
-                                showEditDialog(context, member); // Call edit method
+                                showEditDialog(context, member,id); // Call edit method
                               } else if (result == 'Delete') {
                                 showDeleteDialog(context, phone); // Call delete method
                               }
@@ -207,6 +199,7 @@ class MembersPage extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: CustomElevatedButton(
+
           onPressed: () {
             _showAddMemberModal(context);
           },
@@ -266,7 +259,7 @@ class MembersPage extends StatelessWidget {
       },
     );
   }
-  void showEditDialog(BuildContext context, QueryDocumentSnapshot member) {
+  void showEditDialog(BuildContext context, QueryDocumentSnapshot member,id) {
     final nameController = TextEditingController(text: member['name']);
     final phoneController = TextEditingController(text: member['phone']);
 
@@ -325,14 +318,30 @@ class MembersPage extends StatelessWidget {
                             ),
                           );
                         } else {
-                          await FirebaseFirestore.instance
-                              .collection('members')
-                              .doc(member.id)
-                              .update({
-                            'name': newName,
-                            'phone': newPhone,
-                          });
 
+                          try {
+                            // Query the collection to find the document where the phone matches the oldPhone
+                            QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                                .collection('members')
+                                .where('phone', isEqualTo: member['phone'])
+                                .get();
+
+                            if (querySnapshot.docs.isNotEmpty) {
+                              for (var doc in querySnapshot.docs) {
+                                await FirebaseFirestore.instance
+                                    .collection('members')
+                                    .doc(doc.id) // Use the document ID from the query
+                                    .update({
+                                  'name': newName,
+                                  'phone': newPhone,
+                                });
+                              }
+                            } else {
+                              print("Member with phone number $member['phone'] not found.");
+                            }
+                          } catch (e) {
+                            print("Error updating member: $e");
+                          }
                           Navigator.of(context).pop(); // Close the dialog
                         }
                       },

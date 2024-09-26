@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
-
 import '../services/fire_store_services.dart';
 import '../utills/custom_colors.dart';
 import 'helper_widget/custom_text_field.dart';
@@ -19,7 +17,7 @@ class MemberDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Deposits for $name")),
+      appBar: AppBar(title: Text("Deposits for $name"),centerTitle: true,),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestoreService.getDepositsByPhoneNumber(phoneNumber),
         builder: (context, snapshot) {
@@ -43,37 +41,53 @@ class MemberDetailPage extends StatelessWidget {
                   decoration: customBoxDecoration(),
                   child:  Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Column(
+                    child: Row(
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                "$name, ",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                phoneNumber,
-                                style: const TextStyle(color: Colors.grey),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                        CircleAvatar(
+                          backgroundColor: CustomColors.primaryColor,
+                          child: Text(
+                            name[0],
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text("Total Deposit:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                            Text("$totalInvest Taka", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: CustomColors.primaryColor)),
-                          ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      "$name, ",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      phoneNumber,
+                                      style: const TextStyle(color: Colors.grey,fontSize: 14),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 22),
+                                  const SizedBox(width: 6),
+                                  const Text("Total Deposit:  ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                                  Text("৳ $totalInvest", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: CustomColors.primaryColor)),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -123,14 +137,14 @@ class MemberDetailPage extends StatelessWidget {
                             children: [
                               Container(
                                 width: 4.0,
-                                height: 45,
+                                height: 60,
                                 color: CustomColors.primaryColor,
-                                margin: const EdgeInsets.only(right: 8.0),
+                                margin: const EdgeInsets.only(right: 12.0,left: 20),
                               ),
 
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
                                   child: Container(
                                     decoration: customBoxDecoration(),
                                     padding: const EdgeInsets.all(12.0),
@@ -141,6 +155,8 @@ class MemberDetailPage extends StatelessWidget {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
+                                            const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 20),
+                                            const SizedBox(width: 6),
                                             const Text(
                                               "Amount: ",
                                               style: TextStyle(
@@ -148,7 +164,7 @@ class MemberDetailPage extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              "${deposit['invest_amount'] ?? '0.0' } Taka",
+                                              "৳ ${deposit['invest_amount'] ?? '0.0' }",
                                               style: const TextStyle(
                                                 color: CustomColors.primaryColor,
                                                 fontSize: 16,

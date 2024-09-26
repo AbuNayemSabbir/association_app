@@ -12,7 +12,7 @@ class AllDepositsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("All Deposits")),
+      appBar: AppBar(title: const Text("All Deposits"),centerTitle: true,),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestoreService.getAllDeposits(),
         builder: (context, snapshot) {
@@ -79,7 +79,7 @@ class AllDepositsPage extends StatelessWidget {
                           width: 4.0,
                           height: 68,
                           color: CustomColors.primaryColor,
-                          margin: const EdgeInsets.only(right: 8.0),
+                          margin: const EdgeInsets.only(right: 12.0,left: 20),
                         ),
 
                         Expanded(
@@ -102,12 +102,26 @@ class AllDepositsPage extends StatelessWidget {
                                   const SizedBox(height: 4),
 
                                   // Amount in the next line
-                                  Text(
-                                    "Amount: ${deposit['invest_amount'] ?? '0.0'}",
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
-                                    ),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 16),
+                                      const SizedBox(width: 6),
+                                      const Text(
+                                        "Amount: ",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        "৳ ${deposit['invest_amount'] ?? '0.0'}",
+                                        style: const TextStyle(
+                                          color: CustomColors.primaryColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

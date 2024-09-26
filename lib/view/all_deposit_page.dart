@@ -63,7 +63,7 @@ class AllDepositsPage extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "$peopleInvestedOnDate People Invested", // Display how many people invested
+                              "$peopleInvestedOnDate Deposit",
                               style: const TextStyle(color: Colors.grey),
                             ),
                           ],

@@ -461,7 +461,6 @@ class MembersPage extends StatelessWidget {
                             } else {
                               errorMessage.value = '';
 
-                              // If not duplicate, add member
                               _firestoreService.addMember(
                                 phone: phoneController.text,
                                 name: nameController.text,

@@ -190,6 +190,74 @@ class FirestoreService {
       );
     }
   }
+  Future<void> deleteDeposit(String id, BuildContext context) async {
+    try {
+      QuerySnapshot querySnapshot = await _db
+          .collection('members')
+          .where('id', isEqualTo: id)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs) {
+          await _db.collection('members').doc(doc.id).delete();
+        }
+        Navigator.of(context).pop(); // Close dialog
+        Get.snackbar(
+          'Success',
+          'Member deleted successfully',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Member not found',
+          colorText: CustomColors.errorColor,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        colorText: CustomColors.errorColor,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+  Future<void> deleteExpeseByID(String id, BuildContext context) async {
+    try {
+      QuerySnapshot querySnapshot = await _db
+          .collection('expense')
+          .where('id', isEqualTo: id)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs) {
+          await _db.collection('expense').doc(doc.id).delete();
+        }
+        Navigator.of(context).pop(); // Close dialog
+        Get.snackbar(
+          'Success',
+          'Member deleted successfully',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Member not found',
+          colorText: CustomColors.errorColor,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        colorText: CustomColors.errorColor,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
   Future<double> getAllTotalInvestment() async {
     double totalInvestment = 0.0;
 

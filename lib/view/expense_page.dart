@@ -50,8 +50,8 @@ class AllExpensesPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final expense = expenses[index].data() as Map<String, dynamic>;
                   final String currentDate = expense['date'];
+                  final expenseId = expense['id'];
 
-                  // Determine if this is the first occurrence of the date
                   bool showDate = (index == 0) || ((expenses[index - 1].data() as Map<String, dynamic>)['date'] != currentDate);
 
                   // Find how many expenses occurred on the current date
@@ -82,7 +82,6 @@ class AllExpensesPage extends StatelessWidget {
                         ),
                       ],
 
-                      // Row with vertical line and expense details
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -113,12 +112,44 @@ class AllExpensesPage extends StatelessWidget {
                                             fontSize: 14,
                                           ),
                                         ),
-                                        if (userRule == 'Admin')
-                                          IconButton(
-                                            icon: const Icon(Icons.edit, color: CustomColors.primaryColor),
-                                            onPressed: () {
-                                              _showEditExpenseModal(context, expense);
+                                        if (userRule == "Admin")
+                                          PopupMenuButton<String>(
+                                            onSelected: (String result) {
+                                              if (result == 'Edit') {
+                                                showEditDialog(context, expenseId,expense['invest_amount']); // Call edit method
+                                              } else if (result == 'Delete') {
+                                                showDeleteDialog(context, expenseId); // Call delete method
+                                              }
                                             },
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            icon: const Icon(
+                                              Icons.more_vert,
+                                              color: Colors.grey,
+                                            ),
+                                            itemBuilder: (BuildContext context) => [
+                                              const PopupMenuItem(
+                                                value: 'Edit',
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.edit, color: Colors.blue),
+                                                    SizedBox(width: 8),
+                                                    Text('Edit'),
+                                                  ],
+                                                ),
+                                              ),
+                                              const PopupMenuItem(
+                                                value: 'Delete',
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.delete, color: Colors.red),
+                                                    SizedBox(width: 8),
+                                                    Text('Delete'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                       ],
                                     ),
@@ -160,10 +191,125 @@ class AllExpensesPage extends StatelessWidget {
 
     );
   }
-  void _showEditExpenseModal(BuildContext context, Map<String, dynamic> expense) {
-    // Similar modal dialog for editing the expense
-    // Implement this function based on your requirements
+  void showEditDialog(BuildContext context, id,amount) {
+    final amountController = TextEditingController(text: amount);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Update Amount",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                const SizedBox(height: 16),
+                CustomTextField(
+                  controller: amountController,
+                  label: 'Amount',
+                ),
+
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      onPressed: () async {
+                        final newAmount = amountController.text;
+
+                        await FirebaseFirestore.instance
+                            .collection('members')
+                            .doc(id)
+                            .update({
+                          'invest_amount': newAmount,
+                        });
+
+                        Navigator.of(context).pop(); // Close the dialog
+
+                      },
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
+  void showDeleteDialog(BuildContext context, String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Do you want to delete this member?",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: CustomColors.warningColor,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: CustomColors.warningColor,
+                      ),
+                      onPressed: () {
+                        _firestoreService.deleteDeposit(id, context);
+                      },
+                      child: const Text('Delete'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close dialog
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _showAddExpenseModal(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController amountController = TextEditingController();

@@ -155,12 +155,45 @@ class MemberDetailPage extends StatelessWidget {
                                                 fontWeight: FontWeight.bold
                                               ),
                                             ),
-                                            userRule=="Admin"?IconButton(
-                                                onPressed: (){
-                                                  showEditDialog(context,depositId,deposit['invest_amount'] );
+                                            if (userRule == "Admin")
+                                              PopupMenuButton<String>(
+                                                onSelected: (String result) {
+                                                  if (result == 'Edit') {
+                                                    showEditDialog(context, depositId,deposit['invest_amount']);
+                                                  } else if (result == 'Delete') {
+                                                    showDeleteDialog(context, depositId);
+                                                  }
                                                 },
-                                                icon: const Icon(Icons.edit,color: CustomColors.warningColor,size: 20,)
-                                            ):const SizedBox.shrink()
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                icon: const Icon(
+                                                  Icons.more_vert,
+                                                  color: Colors.grey,
+                                                ),
+                                                itemBuilder: (BuildContext context) => [
+                                                  const PopupMenuItem(
+                                                    value: 'Edit',
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.edit, color: Colors.blue),
+                                                        SizedBox(width: 8),
+                                                        Text('Edit'),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const PopupMenuItem(
+                                                    value: 'Delete',
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(Icons.delete, color: Colors.red),
+                                                        SizedBox(width: 8),
+                                                        Text('Delete'),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                           ],
                                         ),
                                       ],
@@ -238,6 +271,56 @@ class MemberDetailPage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  void showDeleteDialog(BuildContext context, String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Do you want to delete this member?",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: CustomColors.warningColor,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: CustomColors.warningColor,
+                      ),
+                      onPressed: () {
+                        _firestoreService.deleteDeposit(id, context);
+                      },
+                      child: const Text('Delete'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close dialog
                       },
                       child: const Text('Cancel'),
                     ),

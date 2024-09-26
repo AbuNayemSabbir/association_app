@@ -4,7 +4,7 @@ import 'custom_colors.dart';
 
 class AppUtils {
   // App Name
-  static const String appName = 'ইত্তেহাদুল মুুদাররিস ফান্ড';
+  static const String appName = 'Association App';
 
   // Dashboard Titles
   static const String dashboardTitle = 'Dashboard';

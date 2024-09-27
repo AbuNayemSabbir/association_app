@@ -33,8 +33,17 @@ class AppUtils {
 
   // Common
   static const String loadingMessage = 'Loading...';
+  static  String error = 'Error';
   static const String errorMessage = 'An error occurred. Please try again later.';
+  static  String success = 'Success';
+  static const String successMessageMemberAdd = 'Members add Successfully';
+  static const String successMessageMemberDelete = 'Member deleted successfully';
+  static const String successMessageDepositAdd = 'Deposit added Successfully';
+  static const String successMessageDepositDelete= 'Deposit deleted Successfully';
+  static const String successMessageExpenseAdd = 'An error occurred. Please try again later.';
+  static const String successMessageExpenseDelete = 'Expense deleted successfully';
 }
+
 BoxDecoration customBoxDecoration({
   Color borderColor = CustomColors.grey300,
   Color boxColor = Colors.white,

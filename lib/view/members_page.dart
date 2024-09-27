@@ -54,7 +54,7 @@ class MembersPage extends StatelessWidget {
                 child: Padding(
               padding: EdgeInsets.all(16.0),
                   child: Text(
-                "You have no members. Please Add your association members",
+                AppUtils.emptyMembersTitle,
                 textAlign: TextAlign.justify,
                   style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
               ),
@@ -203,7 +203,7 @@ class MembersPage extends StatelessWidget {
           onPressed: () {
             _showAddMemberModal(context);
           },
-          title: 'Add Member',
+          title: AppUtils.addMemberButtonTitle,
         ),
       ),
     );
@@ -224,7 +224,7 @@ class MembersPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Do you want to delete this member?",
+                  AppUtils.deleteWarning,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -242,13 +242,13 @@ class MembersPage extends StatelessWidget {
                       onPressed: () {
                         _firestoreService.deleteMember(phone, context);
                       },
-                      child: const Text('Delete'),
+                      child:  const Text(AppUtils.deleteButton),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(); // Close dialog
                       },
-                      child: const Text('Cancel'),
+                      child: const Text(AppUtils.cancelButtonTitle),
                     ),
                   ],
                 ),
@@ -278,18 +278,18 @@ class MembersPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Edit Member",
+                  AppUtils.editTitle,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   controller: nameController,
-                  label: 'Name',
+                  label: AppUtils.nameLabel,
                 ),
                 const SizedBox(height: 12,),
                 CustomTextField(
                   controller: phoneController,
-                  label: 'Phone',
+                  label: AppUtils.phoneLabel,
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
@@ -313,7 +313,7 @@ class MembersPage extends StatelessWidget {
                         if (snapshot.docs.isNotEmpty && newPhone != member['phone']) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Phone number already exists!'),
+                              content: Text(AppUtils.errorMessage),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -330,7 +330,7 @@ class MembersPage extends StatelessWidget {
                               for (var doc in querySnapshot.docs) {
                                 await FirebaseFirestore.instance
                                     .collection('members')
-                                    .doc(doc.id) // Use the document ID from the query
+                                    .doc(doc.id)
                                     .update({
                                   'name': newName,
                                   'phone': newPhone,
@@ -345,8 +345,8 @@ class MembersPage extends StatelessWidget {
                           Navigator.of(context).pop(); // Close the dialog
                         }
                       },
-                      child: const Text(
-                        'Save',
+                      child:  const Text(
+                        AppUtils.saveButtonTitle,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -354,7 +354,7 @@ class MembersPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Cancel'),
+                      child: const Text(AppUtils.cancelButtonTitle),
                     ),
                   ],
                 ),
@@ -398,8 +398,8 @@ class MembersPage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Add New Member',
+                         const Text(
+                          AppUtils.newMemberAddTitle,
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -420,14 +420,14 @@ class MembersPage extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: CustomTextField(
                       controller: nameController,
-                      label: 'Member Name',
+                      label: AppUtils.nameLabel,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CustomTextField(
                       controller: phoneController,
-                      label: 'Phone Number',
+                      label: AppUtils.phoneLabel,
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -457,7 +457,7 @@ class MembersPage extends StatelessWidget {
                     child: Obx(() {
                       return CustomElevatedButton(
                         isLoading: _firestoreService.isAddMemberLoading.value,
-                        title: 'Save',
+                        title: AppUtils.saveButtonTitle,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             bool isDuplicate = await _firestoreService
@@ -465,8 +465,7 @@ class MembersPage extends StatelessWidget {
                                     phoneController.text);
                             if (isDuplicate) {
                               // Update the error message to be displayed inside the dialog
-                              errorMessage.value =
-                                  'Phone number already exists!';
+                              errorMessage.value = AppUtils.errorMessage;
                             } else {
                               errorMessage.value = '';
 

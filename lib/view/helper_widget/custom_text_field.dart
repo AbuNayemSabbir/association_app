@@ -1,4 +1,5 @@
 
+import 'package:association_app/utills/app_utills.dart';
 import 'package:association_app/utills/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
@@ -177,12 +178,10 @@ class CustomTextFieldState extends State<CustomTextField> {
                   return null;
                 }
                 else if (value == null || value.isEmpty ) {
-                  return '${widget.label} field is required field';
-                } else if (widget.label == 'E-mail Address' && !isValidEmail(value)) {
-                  return "Please enter valid email";
-                } else if (widget.label == 'Password' &&
+                  return '${widget.label} ${AppUtils.fieldWarning})';
+                }  else if (widget.label == 'Password' &&
                     !isPasswordValid(value)) {
-                  return "Please must be 8 characters";
+                  return AppUtils.passwordWarning;
                 }
                 return null;
               },

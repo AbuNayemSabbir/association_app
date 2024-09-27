@@ -1,9 +1,8 @@
+import 'package:association_app/utills/app_utills.dart';
 import 'package:association_app/utills/custom_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FirestoreService {
@@ -159,13 +158,13 @@ class FirestoreService {
           return const Text('Error');
         }
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 16),
             const SizedBox(width: 6),
             const Flexible(
               child: Text(
-                'Total Invest:  ',
+                AppUtils.totalDeposit,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

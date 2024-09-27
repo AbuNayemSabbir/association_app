@@ -22,8 +22,6 @@ class _DashboardPageState extends State<DashboardPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirestoreService _firebaseService = FirestoreService();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
         title: const Text(AppUtils.dashboardTitle),
         centerTitle: true,
+        leading: Image.asset("name"),
         actions: [
           IconButton(
             icon: const Icon(Icons.menu),
@@ -54,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: CustomColors.primaryColor,
+                    color: CustomColors.primaryDark,
                   ),
                 ),
               ),
@@ -89,7 +88,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     return const Text('Error fetching total investment');
                   }
                   return _buildSummaryCard(
-                    title: "Total Invest",
+                    title: AppUtils.totalDeposit,
                     value: "৳ ${snapshot.data?.toStringAsFixed(2) ?? '0.00'}",
                     icon: Icons.monetization_on,
                     valueColor: Colors.green,
@@ -108,7 +107,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     return const Text('Error fetching total expense');
                   }
                   return _buildSummaryCard(
-                    title: "Total Expense",
+                    title: AppUtils.totalExpense,
                     value: "৳ ${snapshot.data?.toStringAsFixed(2) ?? '0.00'}",
                     icon: Icons.money_off,
                     valueColor: Colors.red,
@@ -235,66 +234,68 @@ class _DashboardPageState extends State<DashboardPage> {
 
   // Drawer widget for navigation
   Widget _buildEndDrawer() {
-    return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: CustomColors.primaryColor,
-            ),
-            child: Center(
-              child: Text(
-                AppUtils.appName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+    return SafeArea(
+      child: Drawer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+             DrawerHeader(
+              decoration: BoxDecoration(
+                color: CustomColors.primaryColor.withOpacity(0.8),
+              ),
+              child: const Center(
+                child: Text(
+                  AppUtils.appName,
+                  style: TextStyle(
+                    color: CustomColors.primaryDark,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          ListTile(
-            title: const Text(AppUtils.membersInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
-            leading: const Icon(Icons.people,color: CustomColors.primaryColor),
-            onTap: () {
-              Get.back();
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MembersPage()));
-            }
-          ),
-          ListTile(
-            title: const Text(AppUtils.allDepositsInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
-            leading: const Icon(Icons.account_balance,color: CustomColors.primaryColor),
-            onTap: () {
-              Get.back();
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AllDepositsPage()));
-            }
-          ),
-          ListTile(
-            title: const Text(AppUtils.allExpensesInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
-            leading: const Icon(Icons.money_off,color: CustomColors.primaryColor),
-            onTap: () {
-              Get.back();
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AllExpensesPage()));
-            }
-          ),
-          ListTile(
-            title: const Text(AppUtils.individualDepositInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
-            leading: const Icon(Icons.person_search,color: CustomColors.primaryColor,),
-            onTap: () {
-              Get.back();
-              Navigator.push(context, MaterialPageRoute(builder: (context) => IndividualMemberPage()));
-            }
-          ),
-          const Spacer(), // Pushes the logout button to the bottom
-          ListTile(
-            leading: const Icon(Icons.exit_to_app, color: Colors.red),
-            title: const Text('Logout', style: TextStyle(color: Colors.red)),
-            onTap: () {
-              _logout();
-            },
-          ),
-        ],
+            ListTile(
+              title: const Text(AppUtils.membersInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+              leading: const Icon(Icons.people,color: CustomColors.primaryColor),
+              onTap: () {
+                Get.back();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MembersPage()));
+              }
+            ),
+            ListTile(
+              title: const Text(AppUtils.allDepositsInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+              leading: const Icon(Icons.account_balance,color: CustomColors.primaryColor),
+              onTap: () {
+                Get.back();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AllDepositsPage()));
+              }
+            ),
+            ListTile(
+              title: const Text(AppUtils.allExpensesInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+              leading: const Icon(Icons.money_off,color: CustomColors.primaryColor),
+              onTap: () {
+                Get.back();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AllExpensesPage()));
+              }
+            ),
+            ListTile(
+              title: const Text(AppUtils.individualDepositInfoTitle,style: TextStyle(color: CustomColors.primaryColor),),
+              leading: const Icon(Icons.person_search,color: CustomColors.primaryColor,),
+              onTap: () {
+                Get.back();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => IndividualMemberPage()));
+              }
+            ),
+            const Spacer(), // Pushes the logout button to the bottom
+            ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.red),
+              title: const Text('Logout', style: TextStyle(color: Colors.red)),
+              onTap: () {
+                _logout();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

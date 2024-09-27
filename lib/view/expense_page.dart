@@ -22,7 +22,7 @@ class AllExpensesPage extends StatelessWidget {
     final String userRule = GetStorage().read("userRule") ?? "";
 
     return Scaffold(
-        appBar: AppBar(title: const Text("All Expenses")),
+        appBar: AppBar(title: const Text(AppUtils.allExpensesInfoTitle),centerTitle: true,),
         body: StreamBuilder<QuerySnapshot>(
           stream: _firestoreService.getAllExpenses(),
           builder: (context, snapshot) {
@@ -37,7 +37,7 @@ class AllExpensesPage extends StatelessWidget {
             if (expenses.isEmpty) {
               return const Center(
                 child: Text(
-                  "You have no expenses yet.",
+                  AppUtils.emptyExpenseTitle,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               );
@@ -74,7 +74,7 @@ class AllExpensesPage extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                "$expenseCountOnDate Expenses",
+                                "$expenseCountOnDate ${AppUtils.numberOfExpense}",
                                 style: const TextStyle(color: Colors.grey),
                               ),
                             ],
@@ -197,7 +197,7 @@ class AllExpensesPage extends StatelessWidget {
               onPressed: () {
                 _showAddExpenseModal(context);
               },
-              title: 'Add Expense',
+              title: AppUtils.addExpenseButtonTitle,
             ),
           ): const SizedBox.shrink() // If not admin, show nothing
 
@@ -220,14 +220,14 @@ class AllExpensesPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Update Amount",
+                 Text(
+                  AppUtils.updateAmountTitle,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   controller: amountController,
-                  label: 'Amount',
+                  label: AppUtils.amountLabel,
                   keyboardType: TextInputType.number,
                 ),
 
@@ -251,14 +251,14 @@ class AllExpensesPage extends StatelessWidget {
 
                         Navigator.of(context).pop();
                         Get.snackbar(
-                          'Success',
-                          'This Expense update successfully',
+                          AppUtils.success,
+                          AppUtils.successMessageExpenseUpdate,
                           snackPosition: SnackPosition.BOTTOM,
                         );
 
                       },
                       child: const Text(
-                        'Update',
+                        AppUtils.saveButtonTitle,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -266,7 +266,7 @@ class AllExpensesPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Cancel'),
+                      child: const Text(AppUtils.cancelButtonTitle),
                     ),
                   ],
                 ),
@@ -292,7 +292,7 @@ class AllExpensesPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Do you want to delete this member?",
+                  AppUtils.deleteWarning,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -310,13 +310,13 @@ class AllExpensesPage extends StatelessWidget {
                       onPressed: () {
                         _firestoreService.deleteExpenseByID(id, context);
                       },
-                      child: const Text('Delete'),
+                      child: const Text(AppUtils.deleteButton),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(); // Close dialog
                       },
-                      child: const Text('Cancel'),
+                      child: const Text(AppUtils.cancelButtonTitle),
                     ),
                   ],
                 ),
@@ -354,7 +354,7 @@ class AllExpensesPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Add Expense',
+                          AppUtils.addExpenseButtonTitle,
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         InkWell(
@@ -372,7 +372,7 @@ class AllExpensesPage extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: CustomTextField(
                       controller: titleController,
-                      label: 'Expense Title',
+                      label: AppUtils.expenseTitleLabel,
                     ),
                   ),
                   // Expense Amount
@@ -380,7 +380,7 @@ class AllExpensesPage extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: CustomTextField(
                       controller: amountController,
-                      label: 'Expense Amount',
+                      label: AppUtils.amountLabel,
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -389,7 +389,7 @@ class AllExpensesPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CustomElevatedButton(
-                      title: 'Save',
+                      title: AppUtils.saveButtonTitle,
                       onPressed: () {
                         // Validate and save the expense
                         if (titleController.text.isNotEmpty &&

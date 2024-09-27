@@ -21,7 +21,7 @@ class IndividualMemberPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Member Deposit"), centerTitle: true),
+      appBar: AppBar(title: const Text(AppUtils.memberDepositInfoTitle), centerTitle: true),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('members').snapshots(),
         builder: (context, snapshot) {
@@ -41,7 +41,7 @@ class IndividualMemberPage extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                  "You have no members to invest. Please Add your association members",
+                  AppUtils.emptyDepositTitle,
                   textAlign: TextAlign.justify,
                   style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
                 ),
@@ -130,33 +130,9 @@ class IndividualMemberPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             // View Button
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.visibility, color: Colors.white, size: 18),
-                              label: const Text('Details View', style: TextStyle(fontSize: 16)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.primaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              onPressed: () {
-                                // Navigate to the view member details page
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => MemberDetailPage(
-                                      phoneNumber: phone,
-                                      name: name,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-
-                            // Add Deposit Button (Visible for Admin)
-                            if (userRule == 'Admin')
-                              ElevatedButton.icon(
-                                icon: const Icon(Icons.add, color: Colors.white, size: 18),
-                                label: const Text('Add Deposit', style: TextStyle(fontSize: 16)),
+                            Flexible(
+                              child: ElevatedButton.icon(
+                                label: const Text(AppUtils.detailsDepositButtonTitle, style: TextStyle(fontSize: 16)),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: CustomColors.primaryColor,
                                   shape: RoundedRectangleBorder(
@@ -164,8 +140,34 @@ class IndividualMemberPage extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  _showAddDepositModal(context, name, phone,member['id']);
+                                  // Navigate to the view member details page
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => MemberDetailPage(
+                                        phoneNumber: phone,
+                                        name: name,
+                                      ),
+                                    ),
+                                  );
                                 },
+                              ),
+                            ),
+
+                            // Add Deposit Button (Visible for Admin)
+                            if (userRule == 'Admin')
+                              Flexible(
+                                child: ElevatedButton.icon(
+                                  label: const Text(AppUtils.addDepositButtonTitle, style: TextStyle(fontSize: 16)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: CustomColors.primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _showAddDepositModal(context, name, phone,member['id']);
+                                  },
+                                ),
                               ),
                           ],
                         ),
@@ -212,7 +214,7 @@ class IndividualMemberPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Add Deposit',
+                          AppUtils.addDepositButtonTitle,
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -232,7 +234,7 @@ class IndividualMemberPage extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: CustomTextField(
                       controller: amountController,
-                      label: 'Deposit Amount',
+                      label: AppUtils.amountLabel,
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -259,7 +261,7 @@ class IndividualMemberPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CustomElevatedButton(
-                      title: 'Add Deposit',
+                      title: AppUtils.addDepositButtonTitle,
                       onPressed: () async {
                         String amountText = amountController.text;
 

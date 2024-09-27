@@ -17,7 +17,7 @@ class MemberDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Deposits for $name"),centerTitle: true,),
+      appBar: AppBar(title: const Text(AppUtils.individualDepositInfoTitle),centerTitle: true,),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestoreService.getDepositsByPhoneNumber(phoneNumber),
         builder: (context, snapshot) {
@@ -82,7 +82,7 @@ class MemberDetailPage extends StatelessWidget {
                                 children: [
                                   const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 22),
                                   const SizedBox(width: 6),
-                                  const Text("Total Deposit:  ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                                  const Text(AppUtils.totalDeposit, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                                   Text("৳ $totalInvest", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: CustomColors.primaryColor)),
                                 ],
                               ),
@@ -137,7 +137,7 @@ class MemberDetailPage extends StatelessWidget {
                             children: [
                               Container(
                                 width: 4.0,
-                                height: 60,
+                                height: 40,
                                 color: CustomColors.primaryColor,
                                 margin: const EdgeInsets.only(right: 12.0,left: 20),
                               ),
@@ -155,22 +155,27 @@ class MemberDetailPage extends StatelessWidget {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 20),
-                                            const SizedBox(width: 6),
-                                            const Text(
-                                              "Amount: ",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              ),
+                                             Row(
+                                              children: [
+                                                const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 20),
+                                                const SizedBox(width: 6),
+                                                const Text(
+                                                  AppUtils.amount,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "৳ ${deposit['invest_amount'] ?? '0.0' }",
+                                                  style: const TextStyle(
+                                                      color: CustomColors.primaryColor,
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              "৳ ${deposit['invest_amount'] ?? '0.0' }",
-                                              style: const TextStyle(
-                                                color: CustomColors.primaryColor,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold
-                                              ),
-                                            ),
+
                                             if (userRule == "Admin")
                                               PopupMenuButton<String>(
                                                 onSelected: (String result) {
@@ -249,13 +254,13 @@ class MemberDetailPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Update Amount",
+                 AppUtils.updateAmountTitle,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 const SizedBox(height: 16),
                 CustomTextField(
                   controller: amountController,
-                  label: 'Amount',
+                  label: AppUtils.amountLabel,
                 ),
 
                 const SizedBox(height: 16),
@@ -279,8 +284,8 @@ class MemberDetailPage extends StatelessWidget {
                           Navigator.of(context).pop(); // Close the dialog
 
                       },
-                      child: const Text(
-                        'Save',
+                      child:  const Text(
+                        AppUtils.saveButtonTitle,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -288,7 +293,7 @@ class MemberDetailPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Cancel'),
+                      child: const Text(AppUtils.cancelButtonTitle),
                     ),
                   ],
                 ),
@@ -314,7 +319,7 @@ class MemberDetailPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  "Do you want to delete this member?",
+                  AppUtils.deleteWarning,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -332,13 +337,13 @@ class MemberDetailPage extends StatelessWidget {
                       onPressed: () {
                         _firestoreService.deleteDeposit(id, context);
                       },
-                      child: const Text('Delete'),
+                      child: const Text(AppUtils.deleteButton),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(); // Close dialog
                       },
-                      child: const Text('Cancel'),
+                      child: const Text(AppUtils.cancelButtonTitle),
                     ),
                   ],
                 ),

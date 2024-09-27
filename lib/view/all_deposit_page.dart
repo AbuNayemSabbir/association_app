@@ -12,7 +12,7 @@ class AllDepositsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("All Deposits"),centerTitle: true,),
+      appBar: AppBar(title: const Text(AppUtils.allDepositSectionTitle),centerTitle: true,),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestoreService.getAllDeposits(),
         builder: (context, snapshot) {
@@ -25,7 +25,7 @@ class AllDepositsPage extends StatelessWidget {
 
           if (deposits.isEmpty) {
             return const Center(
-              child: Text("You have no deposits yet.",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              child: Text(AppUtils.emptyAllDepositTitle,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
             );
           }
 
@@ -61,11 +61,7 @@ class AllDepositsPage extends StatelessWidget {
                                 fontSize: 16,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "$peopleInvestedOnDate Deposit",
-                              style: const TextStyle(color: Colors.grey),
-                            ),
+
                           ],
                         ),
                       ),
@@ -107,7 +103,7 @@ class AllDepositsPage extends StatelessWidget {
                                       const Icon(Icons.monetization_on, color: CustomColors.primaryColor, size: 16),
                                       const SizedBox(width: 6),
                                       const Text(
-                                        "Amount: ",
+                                        AppUtils.amount,
                                         style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: 14,

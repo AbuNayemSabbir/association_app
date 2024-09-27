@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                       // const SizedBox(height: 24),
                       const Center(
                         child: Text(AppUtils.appName,
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: CustomColors.grey900),),
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: CustomColors.primaryDark),),
                       ),
                       const SizedBox(height: 12),
                       const SizedBox(height: 24),
@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             }
                           },
-                          title: 'Sign In',
+                          title: AppUtils.loginButtonTitle,
                         );
 
                       }

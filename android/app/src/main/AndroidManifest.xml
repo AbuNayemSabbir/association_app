@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="association_app"
+        android:label="ইত্তেহাদুল মুুদাররিস ফান্ড"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

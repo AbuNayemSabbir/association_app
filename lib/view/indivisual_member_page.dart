@@ -70,94 +70,80 @@ class IndividualMemberPage extends StatelessWidget {
               final String phone = member['phone'];
               final userRule = box.read("userRule");
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                child: Card(
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Name and Phone Row with Icon
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: CustomColors.primaryColor,
-                              child: Text(name[0], style: const TextStyle(color: Colors.white)),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.phone, color: Colors.grey, size: 16),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        phone,
-                                        style: const TextStyle(color: Colors.grey, fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+              return InkWell(
+                onTap: (){
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MemberDetailPage(
+                        phoneNumber: phone,
+                        name: name,
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                  child: Card(
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Name and Phone Row with Icon
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: CustomColors.primaryColor,
+                                child: Text(name[0], style: const TextStyle(color: Colors.white)),
                               ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        // Show total investment
-                        _firestoreService.showTotalInvestment(phone),
-
-                        const Divider(color: Colors.grey),
-
-                        // Buttons: View and Add Deposit
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // View Button
-                            Flexible(
-                              child: ElevatedButton.icon(
-                                label: const Text(AppUtils.detailsDepositButtonTitle, style: TextStyle(fontSize: 16)),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: CustomColors.primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.phone, color: Colors.grey, size: 16),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          phone,
+                                          style: const TextStyle(color: Colors.grey, fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                onPressed: () {
-                                  // Navigate to the view member details page
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => MemberDetailPage(
-                                        phoneNumber: phone,
-                                        name: name,
-                                      ),
-                                    ),
-                                  );
-                                },
                               ),
-                            ),
+                            ],
+                          ),
 
-                            // Add Deposit Button (Visible for Admin)
-                            if (userRule == 'Admin')
+                          const SizedBox(height: 12),
+
+                          // Show total investment
+                          _firestoreService.showTotalInvestment(phone),
+
+                          const Divider(color: Colors.grey),
+
+                          // Buttons: View and Add Deposit
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              // View Button
                               Flexible(
                                 child: ElevatedButton.icon(
-                                  label: const Text(AppUtils.addDepositButtonTitle, style: TextStyle(fontSize: 16)),
+                                  label: const Text(AppUtils.detailsDepositButtonTitle, style: TextStyle(fontSize: 16)),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: CustomColors.primaryColor,
                                     shape: RoundedRectangleBorder(
@@ -165,13 +151,39 @@ class IndividualMemberPage extends StatelessWidget {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _showAddDepositModal(context, name, phone,member['id']);
+                                    // Navigate to the view member details page
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => MemberDetailPage(
+                                          phoneNumber: phone,
+                                          name: name,
+                                        ),
+                                      ),
+                                    );
                                   },
                                 ),
                               ),
-                          ],
-                        ),
-                      ],
+
+                              // Add Deposit Button (Visible for Admin)
+                              if (userRule == 'Admin')
+                                Flexible(
+                                  child: ElevatedButton.icon(
+                                    label: const Text(AppUtils.addDepositButtonTitle, style: TextStyle(fontSize: 16)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: CustomColors.primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _showAddDepositModal(context, name, phone,member['id']);
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

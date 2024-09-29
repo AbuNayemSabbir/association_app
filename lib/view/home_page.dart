@@ -2,7 +2,6 @@ import 'package:association_app/routes/app_routes.dart';
 import 'package:association_app/services/fire_store_services.dart';
 import 'package:association_app/utills/app_utills.dart';
 import 'package:association_app/utills/custom_colors.dart';
-import 'package:association_app/view/helper_widget/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -29,7 +28,10 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
         title: const Text(AppUtils.dashboardTitle),
         centerTitle: true,
-        leading: Image.asset("name"),
+        leading: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Image.asset("assets/icons/app_icon.png"),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.menu),

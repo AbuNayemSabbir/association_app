@@ -78,6 +78,7 @@ class AppUtils {
 class AppUtils {
   // অ্যাপ নাম
   static const String appName = 'ইত্তেহাদুল মুুদাররিস ফান্ড';
+  static const String incorrectPassword = 'ভুল পাসওয়ার্ড';
 
   // ড্যাশবোর্ড শিরোনাম
   static const String dashboardTitle = 'ড্যাশবোর্ড';

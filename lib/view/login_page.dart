@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                               });
 
                               if ((emailTextEditingController.text == "Member" && passwordTextEditingController.text == "Member1122") ||
-                                  (emailTextEditingController.text == "Admin" && passwordTextEditingController.text == "Admin1122")) {
+                                  (emailTextEditingController.text == "Admin" && passwordTextEditingController.text == "Admin@#1122#")) {
                                 final box = GetStorage();
                                 associationController.isLoading.value = true;  // Start loading
                                 await Future.delayed(const Duration(seconds: 2)).then((_){
@@ -113,6 +113,9 @@ class _LoginPageState extends State<LoginPage> {
                                   box.write('isLoggedIn', true);
                                   box.write('userRule', emailTextEditingController.text);
                                 });
+                              }
+                              else{
+                                Get.snackbar(AppUtils.error, AppUtils.incorrectPassword,snackPosition: SnackPosition.BOTTOM);
                               }
                             }
                           },

@@ -34,6 +34,8 @@ class MembersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String userRule = GetStorage().read("userRule") ?? "";
+
     return Scaffold(
       appBar: AppBar(title: const Text(AppUtils.membersSectionTitle),centerTitle: true,),
       body: StreamBuilder<QuerySnapshot>(
@@ -196,7 +198,7 @@ class MembersPage extends StatelessWidget {
 
         },
       ),
-      bottomNavigationBar: Padding(
+      bottomNavigationBar: userRule == 'Admin'?Padding(
         padding: const EdgeInsets.all(16.0),
         child: CustomElevatedButton(
 
@@ -205,7 +207,7 @@ class MembersPage extends StatelessWidget {
           },
           title: AppUtils.addMemberButtonTitle,
         ),
-      ),
+      ):const SizedBox.shrink(),
     );
   }
 

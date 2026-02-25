@@ -1,7 +1,7 @@
-import 'package:association_app/routes/app_routes.dart';
-import 'package:association_app/services/fire_store_services.dart';
-import 'package:association_app/utills/app_utills.dart';
-import 'package:association_app/utills/custom_colors.dart';
+import 'package:association_app_madraha/routes/app_routes.dart';
+import 'package:association_app_madraha/services/fire_store_services.dart';
+import 'package:association_app_madraha/utills/app_utills.dart';
+import 'package:association_app_madraha/utills/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -53,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Text(
                   AppUtils.appName,
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: CustomColors.primaryDark,
                   ),

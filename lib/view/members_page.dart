@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:association_app/services/fire_store_services.dart';
-import 'package:association_app/utills/app_utills.dart';
-import 'package:association_app/utills/custom_colors.dart';
-import 'package:association_app/view/helper_widget/custom_elevated_button.dart';
-import 'package:association_app/view/helper_widget/custom_text_field.dart';
+import 'package:association_app_madraha/services/fire_store_services.dart';
+import 'package:association_app_madraha/utills/app_utills.dart';
+import 'package:association_app_madraha/utills/custom_colors.dart';
+import 'package:association_app_madraha/view/helper_widget/custom_elevated_button.dart';
+import 'package:association_app_madraha/view/helper_widget/custom_text_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

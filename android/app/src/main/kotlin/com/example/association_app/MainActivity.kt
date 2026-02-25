@@ -1,4 +1,4 @@
-package com.association.app
+package com.thikana.app
 
 import io.flutter.embedding.android.FlutterActivity
 

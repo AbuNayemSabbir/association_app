@@ -1,4 +1,4 @@
-import 'package:association_app/utills/custom_colors.dart';
+import 'package:association_app_madraha/utills/custom_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

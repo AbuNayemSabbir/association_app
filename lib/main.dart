@@ -1,14 +1,9 @@
-import 'package:association_app/routes/app_routes.dart';
-import 'package:association_app/utills/custom_colors.dart';
-import 'package:association_app/utills/theme.dart';
-import 'package:association_app/view/home_page.dart';
+import 'package:association_app_madraha/routes/app_routes.dart';
+import 'package:association_app_madraha/utills/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +11,6 @@ void main() async {
   await GetStorage.init();
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -31,5 +25,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-

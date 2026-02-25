@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "537891335138",
-    "project_id": "association--app",
-    "storage_bucket": "association--app.appspot.com"
+    "project_number": "917418976960",
+    "project_id": "association-app-madrasa",
+    "storage_bucket": "association-app-madrasa.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:537891335138:android:e2f93d43a8228c69ed27bb",
+        "mobilesdk_app_id": "1:917418976960:android:eaa0df43c4aa0d1d162f25",
         "android_client_info": {
           "package_name": "com.association.app"
         }
@@ -15,7 +15,45 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCvoxLudRt9fnsrf0ztPwWJnPTFdlqnQ08"
+          "current_key": "AIzaSyCMS-TvEhIcMpawYiYTlp40p1NyCbSpf1o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917418976960:android:9cb94d6e7806d7e5162f25",
+        "android_client_info": {
+          "package_name": "com.association.app.madraha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMS-TvEhIcMpawYiYTlp40p1NyCbSpf1o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917418976960:android:0b9cd3a35577fb53162f25",
+        "android_client_info": {
+          "package_name": "com.thikana.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMS-TvEhIcMpawYiYTlp40p1NyCbSpf1o"
         }
       ],
       "services": {

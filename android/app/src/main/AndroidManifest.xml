@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="ইত্তেহাদুল মুুদাররিস ফান্ড"
+        android:label="ঠিকানা প্রোপার্টিজ সমিতি গাজীপুর"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

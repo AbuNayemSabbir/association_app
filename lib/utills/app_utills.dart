@@ -77,7 +77,7 @@ class AppUtils {
 */
 class AppUtils {
   // অ্যাপ নাম
-  static const String appName = 'ইত্তেহাদুল মুুদাররিস ফান্ড';
+  static const String appName = 'ঠিকানা প্রোপার্টিজ সমিতি গাজীপুর';
   static const String incorrectPassword = 'ভুল পাসওয়ার্ড';
 
   // ড্যাশবোর্ড শিরোনাম
@@ -162,7 +162,7 @@ BoxDecoration customBoxDecoration({
       color: borderColor,
       width: borderWidth,
     ),
-    color: boxColor ,
+    color: boxColor,
     borderRadius: BorderRadius.circular(borderRadius),
   );
 }

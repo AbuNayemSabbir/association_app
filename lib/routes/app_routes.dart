@@ -1,4 +1,4 @@
-import 'package:association_app/view/home_page.dart';
+import 'package:association_app_madraha/view/home_page.dart';
 import 'package:get/get.dart';
 
 import '../view/login_page.dart';

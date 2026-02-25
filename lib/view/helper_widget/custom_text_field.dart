@@ -1,6 +1,6 @@
 
-import 'package:association_app/utills/app_utills.dart';
-import 'package:association_app/utills/custom_colors.dart';
+import 'package:association_app_madraha/utills/app_utills.dart';
+import 'package:association_app_madraha/utills/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 

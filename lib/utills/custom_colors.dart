@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CustomColors {
@@ -11,17 +10,17 @@ class CustomColors {
   static const Color grey700 = Color(0xFF454F5B);
   static const Color grey800 = Color(0xFF212B36);
   static const Color grey900 = Color(0xFF161C24);
-  static const Color tFBC =  Color.fromRGBO(234, 239, 243, 1);
+  static const Color tFBC = Color.fromRGBO(234, 239, 243, 1);
 
-  static const Color primaryColor = Color(0xFF3BE477);
-  static const Color primaryLight = Color(0xFFB0FFFF);
-  static const Color primaryDark = Color(0xFF029494);
-  static const Color primaryContrast = Color(0xFFE4F6FE);
+  static const Color primaryColor = Color(0xFF00FFFF); // Cyan
+  static const Color primaryLight = Color(0xFFE0FFFF); // Light Cyan
+  static const Color primaryDark = Color(0xFF00CED1); // Dark Cyan
+  static const Color primaryContrast = Color(0xFF008B8B);
 
-  static const Color secondaryColor = Color(0xFF7635DC);
-  static const Color secondaryContrast = Color(0xFFF1E1FC);
-  static const Color secondaryLight = Color(0xFFB1B0F1);
-  static const Color secondaryDark = Color(0xFF3C177E);
+  static const Color secondaryColor = Color(0xFF008B8B);
+  static const Color secondaryContrast = Color(0xFFE0FFFF);
+  static const Color secondaryLight = Color(0xFF00FFFF);
+  static const Color secondaryDark = Color(0xFF008080);
 
   static const Color infoColor = Color(0xFF01B0FF);
   static const Color infoLightContrast = Color(0xFFCBEFFF);
@@ -43,7 +42,3 @@ class CustomColors {
   static const Color errorLight = Color(0xFFFFB169);
   static const Color errorDark = Color(0xFF7C2104);
 }
-
-
-
-
